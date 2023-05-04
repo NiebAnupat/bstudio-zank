@@ -1,0 +1,21 @@
+{
+  "name": "bstudio-zank",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "backend:dev": "npm run dev --prefix Backend",
+    "frontend:dev": "npm run dev --prefix Frontend",
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "backend:prod": "npm run start --prefix Backend",
+    "frontend:prod": "npm run preview --prefix Frontend",
+    "prod": "concurrently \"npm run backend:prod\" \"npm run frontend:prod\"",
+    "setup": "npm install && npm install --prefix Backend && npm install --prefix Frontend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.0.1"
+  }
+}
