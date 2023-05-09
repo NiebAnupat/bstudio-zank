@@ -4,7 +4,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
-import { MultiInputTimeRangeField } from "@mui/x-date-pickers-pro/MultiInputTimeRangeField";
+import TimeRangeSlider from "react-time-range-slider";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
@@ -42,6 +42,12 @@ const roomDetail = [
 
 export default function Booking() {
   const [roomType, setRoomType] = React.useState("");
+
+  const [timeRange, setTimeRange] = React.useState({
+    start: "00:00",
+    end: "23:59",
+  });
+
   const handleChange = (event) => {
     setRoomType(event.target.value);
   };
@@ -116,24 +122,28 @@ export default function Booking() {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  width: "90%",
                 }}
               >
-                <Typography>เวลา :</Typography>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["MultiInputTimeRangeField"]}>
-                    <MultiInputTimeRangeField
-                      slotProps={{
-                        textField: ({ position }) => ({
-                          label: position === "start" ? "เวลาเข้า" : "เวลาออก",
-                        }),
-                      }}
-                      sx={{
-                        width: 400,
-                        marginLeft: 1,
-                      }}
-                    />
-                  </DemoContainer>
-                </LocalizationProvider>
+                <Typography width={"17%"}>เวลา :</Typography>
+                <div style={{ width: "100%" }}>
+                  <TimeRangeSlider
+                    disabled={false}
+                    format={24}
+                    maxValue={"23:59"}
+                    minValue={"00:00"}
+                    name={"time_range"}
+                    onChange={(time) => setTimeRange(time)}
+                    step={15}
+                    value={timeRange}
+                  />
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Typography fontSize={13}>{timeRange.start}</Typography>
+                    <Typography fontSize={13}>{timeRange.end}</Typography>
+                  </div>
+                </div>
               </div>
 
               {/* Room Type */}
