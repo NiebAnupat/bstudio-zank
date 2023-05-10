@@ -9,13 +9,9 @@ import {
   Divider,
 } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
+import useAxios from "../lib/useAxios";
 
-export default function RoomCard({ item }) {
-  const [bookButton, setBookButton] = React.useState(true);
-  const handleBook = () => {
-    setBookButton(false);
-  };
-
+export default function RoomCard({ item, handleBooking }) {
   return (
     <>
       <Divider
@@ -64,7 +60,12 @@ export default function RoomCard({ item }) {
                 justifyContent: "end",
               }}
             >
-              <Button variant="contained" onClick={handleBook}>
+              <Button
+                variant="contained"
+                onClick={(e) => {
+                  handleBooking(item.id);
+                }}
+              >
                 จองเลย
               </Button>
             </Box>

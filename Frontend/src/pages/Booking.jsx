@@ -13,11 +13,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import RoomCard from "../components/RoomCard";
 import { Link } from "react-router-dom";
 import useAxios from "../lib/useAxios";
+import moment from "moment-timezone";
 
 // change Button to another Button when c
 
 export default function Booking() {
-  const[theDate , setTheDate] = React.useState("")
+  const [theDate, setTheDate] = React.useState(new Date());
   const [roomType, setRoomType] = React.useState("");
   const [timeRange, setTimeRange] = React.useState({
     start: "00:00",
@@ -26,16 +27,43 @@ export default function Booking() {
 
   const [roomDetail, setRoomDetail] = React.useState([]);
 
+
+
   const handleChange = (event) => {
     setRoomType(event.target.value);
   };
-  
+
+    const handleBooking = async (id) => {
+      try {
+         let formatDate = moment(theDate.$d)
+           .tz("Asia/Bangkok")
+           .format("YYYY/MM/DD");
+        const res = await useAxios.post("/booking", {
+          r_id: id,
+          date : formatDate,
+          time_in : timeRange.start,
+          time_out : timeRange.end,
+        });
+        console.log(res.data);
+        alert("จองสำเร็จ");
+        handleSearch();
+      } catch (e) {
+        console.log(e);
+        alert("จองไม่สำเร็จ");
+      }
+    };
+
+
+  React.useEffect(() => {
+    console.log(theDate);
+    console.log(theDate.$d);
+  }, [theDate]);
 
   const handleSearch = async () => {
     try {
-      
-      let formatDate = new Date(theDate.$d).toISOString().split("T")[0];
-      formatDate = formatDate.split("-").join("/");
+      let formatDate = moment(theDate.$d)
+        .tz("Asia/Bangkok")
+        .format("YYYY-MM-DD");
       const res = await useAxios.get(
         `/rooms/available?date=${formatDate}&time_in=${timeRange.start}&time_out=${timeRange.end}&type=${roomType}`
       );
@@ -104,7 +132,10 @@ export default function Booking() {
                         width: 345,
                         marginLeft: 1,
                       }}
-                      onChange={(newValue) => { setTheDate(newValue) }}
+                      
+                      onChange={(newValue) => {
+                        setTheDate(newValue);
+                      }}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
@@ -250,8 +281,13 @@ export default function Booking() {
               }}
             >
               <h2>ผลการค้นหา</h2>
-              { roomDetail?.map((item) => {
-                return <RoomCard item={item} />;
+              {roomDetail?.map((item) => {
+                return (
+                  <RoomCard
+                    item={item}
+                    handleBooking={handleBooking}
+                  />
+                );
               })}
             </Box>
           </Box>
