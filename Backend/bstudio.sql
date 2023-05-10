@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 09, 2023 at 11:58 AM
+-- Generation Time: May 10, 2023 at 08:10 PM
 -- Server version: 10.9.1-MariaDB-log
 -- PHP Version: 8.1.10
 
@@ -51,6 +51,14 @@ CREATE TABLE `room` (
   `type` tinyint(1) NOT NULL COMMENT '0=small\r\n1=large'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
+--
+-- Dumping data for table `room`
+--
+
+INSERT INTO `room` (`id`, `name`, `price`, `description`, `type`) VALUES
+(1, 'B01', 400, '<p>ห้องเก็บเสียง</p><ul><li>กลอง 1 ชุด</li><li>กีตาร์พร้อมตู้ 2 ชุด</li><li>เบสพร้อมตู้ 1 ชุด</li><li>คีย์บอร์ดพร้อมตู้ 1 ชุด</li><li>ไมค์ร้องพร้อมขา 1 ตัว<br/>&nbsp;</li></ul>', 0),
+(2, 'B02', 600, '<p>ห้องเก็บเสียงขนาดใหญ่ และมีกระจก</p><ul><li>กลอง 1 ชุด</li><li>กีตาร์พร้อมตู้ 2 ชุด</li><li>เบสพร้อมตู้ 1 ชุด</li><li>คีย์บอร์ดพร้อมตู้ 1 ชุด</li><li>ไมค์ร้องพร้อมขา 1 ตัว<br/>&nbsp;</li></ul>', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -61,6 +69,13 @@ CREATE TABLE `users` (
   `username` varchar(20) COLLATE utf8mb4_bin NOT NULL,
   `password` varchar(20) COLLATE utf8mb4_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`username`, `password`) VALUES
+('admin', '1234');
 
 --
 -- Indexes for dumped tables
@@ -93,13 +108,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `history`
 --
 ALTER TABLE `history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `room`
 --
 ALTER TABLE `room`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
