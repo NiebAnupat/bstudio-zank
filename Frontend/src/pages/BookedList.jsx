@@ -4,87 +4,78 @@ import { Box, Button, Tooltip, Alert } from "@mui/material";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import CloseIcon from "@mui/icons-material/Close";
 import { Link } from "react-router-dom";
-
-const columns = [
-  { field: "no", headerName: "ลำดับ", width: 200 },
-  { field: "date", headerName: "วันจอง", width: 500 },
-  { field: "time", headerName: "เวลาจอง", width: 440 },
-  {
-    field: "action",
-    headerName: "",
-    width: 200,
-    sortable: false,
-    disableClickEventBubbling: true,
-    renderCell: (params) => {
-      return (
-        <Button
-          variant="contained"
-          color="error"
-          size="small"
-          onClick={() => {
-            console.log(params);
-          }}
-        >
-          <CloseIcon />
-          ยกเลิก
-        </Button>
-      );
-    },
-  },
-];
-
-const rows = [
-  {
-    id: 1,
-    no: 1,
-    date: "21/10/2021 - 21/10/2021",
-    time: "12.00 - 13.00",
-  },
-  {
-    id: 2,
-    no: 2,
-    date: "21/10/2021 - 21/10/2021",
-    time: "12.00 - 13.00",
-  },
-  {
-    id: 3,
-    no: 3,
-    date: "21/10/2021 - 21/10/2021",
-    time: "12.00 - 13.00",
-  },
-  {
-    id: 4,
-    no: 4,
-    date: "21/10/2021 - 21/10/2021",
-    time: "12.00 - 13.00",
-  },
-  {
-    id: 5,
-    no: 5,
-    date: "21/10/2021 - 21/10/2021",
-    time: "12.00 - 13.00",
-  },
-  {
-    id: 6,
-    no: 6,
-    date: "21/10/2021 - 21/10/2021",
-    time: "12.00 - 13.00",
-  },
-  {
-    id: 7,
-    no: 7,
-    date: "21/10/2021 - 21/10/2021",
-    time: "12.00 - 13.00",
-  },
-  {
-    id: 8,
-    no: 8,
-    date: "21/10/2021 - 21/10/2021",
-    time: "12.00 - 13.00",
-  },
-];
+import useAxios from "../lib/useAxios";
+import { useNavigate } from "react-router-dom";
 
 export default function BookedList() {
+  const Navigate = useNavigate();
+
+  const [booked, setBooked] = React.useState([]);
+
+  React.useEffect(() => {
+    fetchBooked();
+  }, []);
+
+  const fetchBooked = async () => {
+    try {
+      const res = await useAxios.get("/history");
+      console.log(res.data.reverse());
+      setBooked(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };   
+
+  const bookedDelete = async (id) => {
+    try {
+      const res = await useAxios.delete(`/history/${id}`);
+      // console.log(res.data);
+      alert("ยกเลิกสำเร็จ");
+      fetchBooked();
+      Navigate(0);
+    } catch (e) {
+      console.log(e);
+
+      alert("ยกเลิกไม่สำเร็จ");
+    }
+  };
+
+  const columns = [
+    { field: "id", headerName: "ลำดับ", width: 80 },
+    {
+      field: "r_id", headerName: "ประเภทห้อง", width: 200,
+      renderCell: (params) => {
+        return (
+          <>{params.row.r_id === 1 ? "ห้องเล็ก" : "ห้องใหญ่"}</>
+        );
+      }
+    },
+    { field: "date", headerName: "วันจอง", width: 350 },
+    { field: "time_in", headerName: "เวลาเข้า", width: 255 },
+    { field: "time_out", headerName: "เวลาออก", width: 255 },
+    {
+      field: "action",
+      headerName: "",
+      width: 200,
+      sortable: false,
+      disableClickEventBubbling: true,
+      renderCell: (params) => {
+        return (
+          <Button
+            variant="contained"
+            color="error"
+            size="small"
+            onClick={() => {
+              bookedDelete(params.id);
+            }}
+          >
+            <CloseIcon />
+            ยกเลิก
+          </Button>
+        );
+      },
+    },
+  ];
   return (
     <>
       <Box
@@ -120,7 +111,7 @@ export default function BookedList() {
 
           <DataGrid
             sx={{ marginTop: 2 }}
-            rows={rows}
+            rows={booked}
             columns={columns}
             initialState={{
               pagination: {

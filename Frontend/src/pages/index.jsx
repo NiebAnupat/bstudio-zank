@@ -3,6 +3,8 @@ import "../css/home.css";
 import { styled } from "@mui/material/styles";
 import { Box, TextField, Divider, Button } from "@mui/material";
 import { Link } from "react-router-dom";
+import useAxios from "./../lib/useAxios";
+import { useNavigate } from "react-router-dom";
 
 const Root = styled("div")(({ theme }) => ({
   width: "100%",
@@ -13,6 +15,25 @@ const Root = styled("div")(({ theme }) => ({
 }));
 
 export default function Home() {
+  const Navigate = useNavigate();
+
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
+  const handleLogin = async () => {
+    try {
+      const res = await useAxios.post("/login", {
+        username,
+        password,
+      });
+      alert("เข้าสู่ระบบสำเร็จ");
+      localStorage.setItem("user", JSON.stringify(res.data));
+      Navigate("/booking");
+    } catch (e) {
+      alert("เข้าสู่ระบบไม่สำเร็จ");
+    }
+  };
+
   return (
     <>
       <Box height={"78vh"} sx={{ margin: 10 }}>
@@ -46,23 +67,25 @@ export default function Home() {
               </Divider>
             </Root>
             <TextField
-              id="outlined-basic"
+              id="username"
               label="Username"
               variant="outlined"
               sx={{ width: "90%" }}
+              onChange={(e) => setUsername(e.target.value)}
             />
             <TextField
-              id="outlined-password-input"
+              id="password"
               label="Password"
               type="password"
               autoComplete="current-password"
               sx={{ width: "90%" }}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Root>
               <Divider>
-                <Link to="/booking">
-                  <Button variant="contained">Log In</Button>
-                </Link>
+                <Button variant="contained" onClick={handleLogin}>
+                  Log In
+                </Button>
               </Divider>
             </Root>
           </Box>

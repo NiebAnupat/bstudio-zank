@@ -16,6 +16,7 @@
     "@mui/x-date-pickers-pro": "^6.3.0",
     "bstudio-zank": "file:..",
     "dayjs": "^1.11.7",
+    "moment-timezone": "^0.5.43",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.0",
