@@ -42,16 +42,7 @@ export default function RoomCard({ item }) {
               <Typography gutterBottom variant="h5">
                 {item.name} ชั่วโมงละ {item.price} บาท
               </Typography>
-
-              {bookButton ? (
-                item.status === "available" ? (
-                  <CircleIcon sx={{ color: "#16FF00" }} />
-                ) : (
-                  <CircleIcon sx={{ color: "#FF0303" }} />
-                )
-              ) : (
-                <CircleIcon sx={{ color: "#FF0303" }} />
-              )}
+              <CircleIcon sx={{ color: "#16FF00" }} />
             </Box>
 
             <Box
@@ -63,22 +54,7 @@ export default function RoomCard({ item }) {
               }}
             >
               <Typography variant="body2" color="text.secondary">
-                {item.description}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {item.drum}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {item.guitar}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {item.base}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {item.keybord}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {item.mice}
+                <div dangerouslySetInnerHTML={{ __html: item.description }} />
               </Typography>
             </Box>
 
@@ -88,21 +64,9 @@ export default function RoomCard({ item }) {
                 justifyContent: "end",
               }}
             >
-              {bookButton ? (
-                item.status === "available" ? (
-                  <Button variant="contained" onClick={handleBook}>
-                    จองเลย
-                  </Button>
-                ) : (
-                  <Button variant="contained" disabled>
-                    ไม่ว่าง
-                  </Button>
-                )
-              ) : (
-                <Button variant="contained" disabled>
-                  ไม่ว่าง
-                </Button>
-              )}
+              <Button variant="contained" onClick={handleBook}>
+                จองเลย
+              </Button>
             </Box>
           </CardContent>
         </CardActionArea>

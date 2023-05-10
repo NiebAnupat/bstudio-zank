@@ -3,7 +3,7 @@ import { Box, Typography, Button, Tooltip } from "@mui/material";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
-import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TimeRangeSlider from "react-time-range-slider";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -12,44 +12,38 @@ import CircleIcon from "@mui/icons-material/Circle";
 import MenuIcon from "@mui/icons-material/Menu";
 import RoomCard from "../components/RoomCard";
 import { Link } from "react-router-dom";
-
-const roomDetail = [
-  {
-    name: "B01",
-    price: "400",
-    status: "available",
-    description: "ห้องเก็บเสียง",
-    drum: "กลอง 1 ชุด",
-    guitar: "กีตาร์พร้อมตู้ 2 ชุด",
-    base: "เบสพร้อมตู้ 1 ชุด",
-    keybord: "คีย์บอร์ดพร้อมตู้ 1 ชุด",
-    mice: "ไมค์ร้องพร้อมขา 1 ตัว",
-  },
-  {
-    name: "B02",
-    price: "600",
-    status: "unavailable",
-    description: "ห้องเก็บเสียงขนาดใหญ่กว่า และมีกระจก",
-    drum: "กลอง 1 ชุด",
-    guitar: "กีตาร์พร้อมตู้ 2 ชุด",
-    base: "เบสพร้อมตู้ 1 ชุด",
-    keybord: "คีย์บอร์ดพร้อมตู้ 1 ชุด",
-    mice: "ไมค์ร้องพร้อมขา 1 ตัว",
-  },
-];
+import useAxios from "../lib/useAxios";
 
 // change Button to another Button when c
 
 export default function Booking() {
+  const[theDate , setTheDate] = React.useState("")
   const [roomType, setRoomType] = React.useState("");
-
   const [timeRange, setTimeRange] = React.useState({
     start: "00:00",
     end: "23:59",
   });
 
+  const [roomDetail, setRoomDetail] = React.useState([]);
+
   const handleChange = (event) => {
     setRoomType(event.target.value);
+  };
+  
+
+  const handleSearch = async () => {
+    try {
+      
+      let formatDate = new Date(theDate.$d).toISOString().split("T")[0];
+      formatDate = formatDate.split("-").join("/");
+      const res = await useAxios.get(
+        `/rooms/available?date=${formatDate}&time_in=${timeRange.start}&time_out=${timeRange.end}&type=${roomType}`
+      );
+      console.log(res);
+      setRoomDetail(res.data);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -103,13 +97,14 @@ export default function Booking() {
               >
                 <Typography>วันที่ :</Typography>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DateRangePicker"]}>
-                    <DateRangePicker
-                      localeText={{ start: "เวลาเข้า", end: "เวลาออก" }}
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      id="theDate"
                       sx={{
-                        width: 400,
+                        width: 345,
                         marginLeft: 1,
                       }}
+                      onChange={(newValue) => { setTheDate(newValue) }}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
@@ -128,11 +123,9 @@ export default function Booking() {
                 <Typography width={"17%"}>เวลา :</Typography>
                 <div style={{ width: "100%" }}>
                   <TimeRangeSlider
-                    disabled={false}
                     format={24}
                     maxValue={"23:59"}
                     minValue={"00:00"}
-                    name={"time_range"}
                     onChange={(time) => setTimeRange(time)}
                     step={15}
                     value={timeRange}
@@ -174,7 +167,9 @@ export default function Booking() {
                 </FormControl>
               </div>
 
-              <Button variant="contained">ค้นหา</Button>
+              <Button variant="contained" onClick={handleSearch}>
+                ค้นหา
+              </Button>
             </Box>
 
             {/* Status */}
@@ -255,7 +250,7 @@ export default function Booking() {
               }}
             >
               <h2>ผลการค้นหา</h2>
-              {roomDetail.map((item) => {
+              { roomDetail?.map((item) => {
                 return <RoomCard item={item} />;
               })}
             </Box>

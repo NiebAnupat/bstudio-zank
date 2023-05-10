@@ -6,13 +6,7 @@ import dayjs from "dayjs";
 
 dotenv.config();
 const port = process.env.PORT;
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-});
+const db = mysql.createConnection(process.env.DATABASE_URL);
 const app = express();
 
 app.use(cors());
@@ -28,10 +22,10 @@ app.post("/login", async (req, res) => {
   try {
     const user = await db
       .promise()
-      .query(`SELECT * FROM user WHERE username = ?`, [username]);
+      .query(`SELECT * FROM users WHERE username = ?`, [username]);
     if (user.length === 0)
       return res.status(404).json({ message: "User not found" });
-    if (user[0].password !== password)
+    if (user[0][0].password !== password)
       return res.status(401).json({ message: "Password incorrect" });
     return res.status(200).json({ message: "Login success" });
   } catch (error) {
@@ -62,7 +56,7 @@ app.post("/booking", async (req, res) => {
       .promise()
       .query(
         `INSERT INTO history (r_id, date, time_in, time_out) VALUES (?, ?, ?, ?)`,
-        [r_id, bookDate, newTimeIn, newTimeOut]
+        [r_id, date, newTimeIn, newTimeOut]
       );
     return res.status(200).json({ message: "Booking success" });
   } catch (error) {
@@ -106,6 +100,7 @@ app.get("/rooms/:id", async (req, res) => {
 app.get("/history", async (req, res) => {
   try {
     const result = await db.promise().query(`SELECT * FROM history`);
+    console.log(result[0]);
     return res.status(200).json(result[0]);
   } catch (error) {
     return res.status(500).json({ message: error.message });

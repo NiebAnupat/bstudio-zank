@@ -10,12 +10,13 @@
     "backend:prod": "npm run start --prefix Backend",
     "frontend:prod": "npm run preview --prefix Frontend",
     "prod": "concurrently \"npm run backend:prod\" \"npm run frontend:prod\"",
-    "setup": "npm install && npm install --prefix Backend && npm install --prefix Frontend"
+    "setup": "npm install && npm install --prefix Backend && npm install --force --prefix Frontend"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.4.0",
     "concurrently": "^8.0.1"
   }
 }
